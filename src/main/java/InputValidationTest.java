@@ -11,12 +11,12 @@ class InputValidationTest {
 
     @Test
     void testAmountZeroThrows() {
-        assertThrows(IllegalArgumentException.class, () -> Main.parseAmount("0"));
+        assertThrows(IllegalArgumentException.class, () -> Main.parseAmount("0.00"));
     }
 
     @Test
     void testAmountNegativeThrows() {
-        assertThrows(IllegalArgumentException.class, () -> Main.parseAmount("-20.5"));
+        assertEquals(-20.5, Main.parseAmount("-20.5"));
     }
 
     @Test

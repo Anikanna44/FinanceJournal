@@ -7,6 +7,13 @@ public class Transaction {
     private String category;
     private LocalDate date;
 
+    public Transaction(int id, double amount, String category, LocalDate date) {
+        this.id = id;
+        this.amount = amount;
+        this.category = category;
+        this.date = date;
+    }
+    
     public Transaction(double amount, String category, LocalDate date) {
         this.id = counter++;
         this.amount = amount;
@@ -37,5 +44,9 @@ public class Transaction {
 
     public static void resetCounter() {
         counter = 1;
+    }
+
+    public static void setCounter(int newCounter) {
+        counter = newCounter;
     }
 }
