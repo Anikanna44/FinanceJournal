@@ -7,8 +7,11 @@ public class Main {
     private static final Manager manager = new Manager();
 
     public static void main(String[] args) {
+        System.out.println("Vitaj v tvojom finančnom denníčku");
+
+        showSummary();
         while (true) {
-            System.out.println("\n1. Pridaj transakciu\n2. Zobraz transakcie\n3. Koniec");
+            System.out.println("\n1. Pridaj transakciu\n2. Zobraz transakcie\n3. Zobraz zostatok\n4. Koniec");
             System.out.print("Vyber možnosť: ");
             String input = scanner.nextLine();
 
@@ -20,12 +23,20 @@ public class Main {
                     manager.listTransactions();
                     break;
                 case "3":
+                    showSummary();
+                    break;
+                case "4":
                     System.out.println("Ukončujem program.");
                     return;
                 default:
                     System.out.println("Neplatná možnosť.");
             }
         }
+    }
+
+    private static void showSummary() {
+        System.out.println("Zostatok účtu: " + manager.calculateBalance());
+        manager.printMonthlySummary();
     }
 
     private static void addTransaction() {
@@ -70,8 +81,8 @@ public class Main {
     public static double parseAmount(String input) {
         try {
             double amount = Double.parseDouble(input);
-            if (amount <= 0) {
-                throw new IllegalArgumentException("Suma musí byť kladné číslo.");
+            if (amount == 0) {
+                throw new IllegalArgumentException("Suma nesmie byť nula.");
             }
             return amount;
         } catch (NumberFormatException e) {
