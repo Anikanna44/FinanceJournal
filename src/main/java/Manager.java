@@ -1,10 +1,6 @@
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.time.YearMonth;
-import java.util.Map;
-import java.util.TreeMap;
-
 
 
 public class Manager {
@@ -36,6 +32,46 @@ public class Manager {
         return balance;
     }
 
+    public void printSummary() {
+        printMonthlySummary();
+        printLastMonthSummaryByCategories();
+    }
+
+    private void printLastMonthSummaryByCategories() {
+        YearMonth now = YearMonth.now();
+        System.out.println("\nDetailné zhrnutie pre " + now + ":");
+
+        Map<String, Double> incomeByCategory = new HashMap<>();
+        Map<String, Double> expenseByCategory = new HashMap<>();
+
+        for (Transaction t : transactions) {
+            if (YearMonth.from(t.getDate()).equals(now)) {
+                String category = t.getCategory();
+                double amount = t.getAmount();
+
+                if (amount >= 0) {
+                    incomeByCategory.put(category, incomeByCategory.getOrDefault(category, 0.0) + amount);
+                } else {
+                    expenseByCategory.put(category, expenseByCategory.getOrDefault(category, 0.0) + Math.abs(amount));
+                }
+            }
+        }
+
+        if (!incomeByCategory.isEmpty()) {
+            System.out.println("\n Príjmy podľa kategórií:");
+            incomeByCategory.forEach((cat, amt) -> System.out.printf(" - %s: %.2f\n", cat, amt));
+        } else {
+            System.out.println("\n Žiadne príjmy za tento mesiac.");
+        }
+
+        if (!expenseByCategory.isEmpty()) {
+            System.out.println("\n Výdavky podľa kategórií:");
+            expenseByCategory.forEach((cat, amt) -> System.out.printf(" - %s: %.2f\n", cat, amt));
+        } else {
+            System.out.println("\n Žiadne výdavky za tento mesiac.");
+        }
+    }
+
     public void printMonthlySummary() {
         if (transactions.isEmpty()) {
             System.out.println(NO_TRANSACTIONS);
@@ -49,16 +85,21 @@ public class Manager {
             monthlyBalances.put(ym, monthlyBalances.getOrDefault(ym, 0.0) + t.getAmount());
         }
 
-        System.out.println("\nZhrnutie za posledných 12 mesiacov:");
+        System.out.println("\nZhrnutie zostatkov za posledných 12 mesiacov:");
         YearMonth now = YearMonth.now();
         for (int i = 0; i < 12; i++) {
             YearMonth month = now.minusMonths(i);
             double sum = monthlyBalances.getOrDefault(month, 0.0);
-            System.out.println(month + ": " + sum);
+            System.out.printf(" %s: %.2f\n", month, sum);
         }
     }
 
+
     public List<Transaction> getTransactions() {
+        return transactions;
+    }
+
+    public List<Transaction> getCopyTransactions() {
         return new ArrayList<>(transactions);
     }
 

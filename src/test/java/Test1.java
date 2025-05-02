@@ -1,18 +1,31 @@
+import java.io.File;
 import java.time.LocalDate;
 import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 
 class Test1{
+    private static final String TEST_FILE = "test_transactions.txt";
     private Manager manager;
 
     @BeforeEach
     void setUp() {
         Transaction.resetCounter();
-        manager = new Manager();
+        manager = new Manager(TEST_FILE);
     }
+
+    @AfterEach
+    void tearDown() {
+        File file = new File(TEST_FILE);
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
     @Test
      void testAddTransaction() {
         manager.addTransaction(100.0, "Strava", LocalDate.of(2025, 4, 25));

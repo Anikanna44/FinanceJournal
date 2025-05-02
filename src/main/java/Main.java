@@ -35,8 +35,9 @@ public class Main {
     }
 
     private static void showSummary() {
-        System.out.println("Zostatok účtu: " + manager.calculateBalance());
-        manager.printMonthlySummary();
+        manager.printSummary();
+        System.out.println("\nZostatok účtu: " + manager.calculateBalance());
+
     }
 
     private static void addTransaction() {

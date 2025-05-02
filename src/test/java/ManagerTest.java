@@ -70,8 +70,8 @@ class ManagerTest {
     @Test
     void testSeparateListsCopies() {
         manager.addTransaction(300.0, "Gift", LocalDate.now());
-        List<Transaction> copy1 = manager.getTransactions();
-        List<Transaction> copy2 = manager.getTransactions();
+        List<Transaction> copy1 = manager.getCopyTransactions();
+        List<Transaction> copy2 = manager.getCopyTransactions();
 
         assertNotSame(copy1, copy2);
         copy1.clear(); // modify copy1
