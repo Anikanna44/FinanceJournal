@@ -1,5 +1,6 @@
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -11,7 +12,7 @@ public class Main {
 
         showSummary();
         while (true) {
-            System.out.println("\n1. Pridaj transakciu\n2. Zobraz transakcie\n3. Zobraz zostatok\n4. Koniec");
+            System.out.println("\n1. Pridaj transakciu\n2. Zobraz transakcie\n3. Zobraz zostatok\n4. Filtruj transakcie\n5. Koniec");
             System.out.print("Vyber možnosť: ");
             String input = scanner.nextLine();
 
@@ -26,6 +27,9 @@ public class Main {
                     showSummary();
                     break;
                 case "4":
+                    filterTransactions();
+                    break;
+                case "5":
                     System.out.println("Ukončujem program.");
                     return;
                 default:
@@ -98,5 +102,80 @@ public class Main {
             throw new IllegalArgumentException("Dátum musí byť vo formáte RRRR-MM-DD.");
         }
     }
+
+    private static void filterTransactions() {
+        TransactionFilter filter = new TransactionFilter(manager.getCopyTransactions());
+
+        System.out.println("Filtrovať podľa:\n1. Kategórie\n2. Dátumu\n3. Suma\n4. Ukončiť filtrovanie");
+        System.out.print("Zadaj možnosť: ");
+        String choice = scanner.nextLine();
+
+        List<Transaction> results;
+
+        switch (choice) {
+            case "1":
+                results = filterByCategory(filter);
+                break;
+            case "2":
+                results = filterByDateRange(filter);
+                break;
+            case "3":
+                results = filterByAmount(filter);
+                break;
+            case "4":
+                return;
+            default:
+                System.out.println("Neplatná možnosť.");
+                return;
+        }
+
+        if (results.isEmpty()) {
+            System.out.println("Žiadne transakcie nezodpovedajú filtru.");
+        } else {
+            System.out.println("Vyfiltrované transakcie:");
+            for (Transaction t : results) {
+                System.out.println(t);
+            }
+        }
+    }
+
+    private static List<Transaction> filterByAmount(TransactionFilter filter) {
+        List<Transaction> results;
+        try {
+            System.out.print("Zadaj minimálnu sumu: ");
+            double min = parseAmount(scanner.nextLine());
+            System.out.print("Zadaj maximálnu sumu: ");
+            double max = parseAmount(scanner.nextLine());
+            results = filter.filterByAmountRange(min, max);
+        } catch (Exception e) {
+            System.out.println("Neplatná suma: " + e.getMessage());
+            return null;
+        }
+        return results;
+    }
+
+    private static List<Transaction> filterByDateRange(TransactionFilter filter) {
+        List<Transaction> results;
+        try {
+            System.out.print("Zadaj dátum OD (RRRR-MM-DD): ");
+            LocalDate from = parseDate(scanner.nextLine());
+            System.out.print("Zadaj dátum DO (RRRR-MM-DD): ");
+            LocalDate to = parseDate(scanner.nextLine());
+            results = filter.filterByDateRange(from, to);
+        } catch (Exception e) {
+            System.out.println("Neplatný dátum: " + e.getMessage());
+            return null;
+        }
+        return results;
+    }
+
+    private static List<Transaction> filterByCategory(TransactionFilter filter) {
+        List<Transaction> results;
+        System.out.print("Zadaj kategóriu: ");
+        String category = scanner.nextLine();
+        results = filter.filterByCategory(category);
+        return results;
+    }
+
 
 }
