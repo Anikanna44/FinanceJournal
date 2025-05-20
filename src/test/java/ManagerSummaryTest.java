@@ -70,8 +70,8 @@ public class ManagerSummaryTest {
         manager.printSummary();
         String output = outContent.toString();
 
-        assertTrue(output.contains("Výplata: 200.00"));
-        assertTrue(output.contains("Potraviny: 100.00"));
+        assertTrue(output.contains("Výplata: 200,00"));
+        assertTrue(output.contains("Potraviny: 100,00"));
     }
 
     @Test

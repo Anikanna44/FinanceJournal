@@ -104,4 +104,29 @@ class ManagerTest {
         manager.addTransaction(-100.0, "Výber", LocalDate.now());
         assertEquals(200.0, manager.calculateBalance());
     }
+
+    // Tests for transaction deletion
+    @Test
+    void testDeleteExistingTransaction() {
+        manager.addTransaction(100.0, "Food", LocalDate.now());
+        Transaction addedTransaction = manager.findTransactionById(1);
+        assertNotNull(addedTransaction, "Transaction should be added and found.");
+        assertEquals(1, manager.getTransactions().size());
+
+        boolean deleted = manager.deleteTransactionById(1);
+        assertTrue(deleted, "Deletion should be successful for an existing transaction.");
+        assertNull(manager.findTransactionById(1), "Transaction should be null after deletion.");
+        assertEquals(0, manager.getTransactions().size(), "Transaction list should be empty.");
+    }
+
+    @Test
+    void testDeleteNonExistingTransaction() {
+        manager.addTransaction(50.0, "Transport", LocalDate.now());
+        assertEquals(1, manager.getTransactions().size());
+
+        boolean deleted = manager.deleteTransactionById(99); // Non-existing ID
+        assertFalse(deleted, "Deletion should fail for a non-existing transaction ID.");
+        assertEquals(1, manager.getTransactions().size(), "Transaction list should remain unchanged.");
+        assertNotNull(manager.findTransactionById(1), "Original transaction should still exist.");
+    }
 }
