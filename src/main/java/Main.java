@@ -78,12 +78,33 @@ public class Main {
 
 
     private static String readCategory() {
-        System.out.print("Zadaj kategóriu: ");
-        String category = scanner.nextLine();
-        if (category.isBlank()) {
+        List<String> availableCategories = manager.getAvailableCategories();
+        if (!availableCategories.isEmpty()) {
+            System.out.println("Dostupné kategórie:");
+            for (int i = 0; i < availableCategories.size(); i++) {
+                System.out.printf("%d. %s%n", i + 1, availableCategories.get(i));
+            }
+        } else {
+            System.out.println("Nie sú dostupné žiadne kategórie. Môžete pridať novú zadaním jej názvu.");
+        }
+
+        System.out.print("Zadaj kategóriu (číslo alebo názov): ");
+        String input = scanner.nextLine().trim();
+        if (input.isBlank()) {
             throw new IllegalArgumentException("Kategória nesmie byť prázdna.");
         }
-        return category.trim();
+        try {
+            int choice = Integer.parseInt(input);
+            if (choice > 0 && choice <= availableCategories.size()) {
+                return availableCategories.get(choice - 1);
+            } else {
+                throw new IllegalArgumentException("Neplatné číslo kategórie.");
+            }
+        } catch (NumberFormatException e) {
+            // Input is not a number, so treat it as a category name
+            return input;
+        }
+
     }
 
 
