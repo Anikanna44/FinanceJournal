@@ -8,6 +8,7 @@ public class Manager {
     private TransactionStorage storage;
 
     private List<Transaction> transactions;
+    private CategoryManager categoryManager;
 
     public Manager() {
         this("transactions.txt");
@@ -16,12 +17,14 @@ public class Manager {
     public Manager(String fileName) {
         this.storage = new TransactionStorage(fileName);
         this.transactions = storage.loadTransactionsFromFile();
+        this.categoryManager = new CategoryManager(this.transactions);
     }
 
     public void addTransaction(double amount, String category, LocalDate date) {
         Transaction transaction = new Transaction(amount, category, date);
         transactions.add(transaction);
         storage.saveTransactionToFile(transaction);
+        categoryManager.addCategoryIfNew(category);
     }
 
     public boolean deleteTransactionById(int id) {
@@ -29,9 +32,14 @@ public class Manager {
         if (transactionToRemove != null) {
             transactions.remove(transactionToRemove);
             storage.deleteTransactionFromFile(id);
+            categoryManager.updateCategoriesFromTransactions(this.transactions);
             return true;
         }
         return false; // Transaction not found
+    }
+
+    public List<String> getAvailableCategories() {
+        return categoryManager.getCategories();
     }
 
 
