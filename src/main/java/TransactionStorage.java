@@ -56,4 +56,27 @@ public class TransactionStorage {
         }
     }
 
+    public boolean deleteTransactionFromFile(int transactionId) {
+        List<Transaction> allTransactions = loadTransactionsFromFile();
+        List<Transaction> transactionsToKeep = allTransactions.stream()
+                .filter(t -> t.getId() != transactionId)
+                .toList();
+
+        if (allTransactions.size() == transactionsToKeep.size()) {
+            // nothing to delete
+            return false;
+        }
+
+        // Empty the file
+        try (FileWriter fw = new FileWriter(fileName, false)) {
+            fw.write("");
+        } catch (IOException e) {
+            System.out.println("Chyba pri mazaní obsahu súboru transakcií: " + e.getMessage());
+            return false;
+        }
+        for (Transaction t : transactionsToKeep) {
+            saveTransactionToFile(t);
+        }
+        return true;
+    }
 }

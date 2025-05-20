@@ -24,6 +24,17 @@ public class Manager {
         storage.saveTransactionToFile(transaction);
     }
 
+    public boolean deleteTransactionById(int id) {
+        Transaction transactionToRemove = findTransactionById(id);
+        if (transactionToRemove != null) {
+            transactions.remove(transactionToRemove);
+            storage.deleteTransactionFromFile(id);
+            return true;
+        }
+        return false; // Transaction not found
+    }
+
+
     public double calculateBalance() {
         double balance = 0;
         for (Transaction t : transactions) {
