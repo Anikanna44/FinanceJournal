@@ -12,7 +12,7 @@ public class Main {
 
         showSummary();
         while (true) {
-            System.out.println("\n1. Pridaj transakciu\n2. Zobraz transakcie\n3. Zobraz zostatok\n4. Filtruj transakcie\n5. Koniec");
+            System.out.println("\n1. Pridaj transakciu\n2. Zobraz transakcie\n3. Zobraz zostatok\n4. Filtruj transakcie\n5. Vymaž transakciu\n6. Koniec");
             System.out.print("Vyber možnosť: ");
             String input = scanner.nextLine();
 
@@ -30,6 +30,9 @@ public class Main {
                     filterTransactions();
                     break;
                 case "5":
+                    deleteTransaction();
+                    break;
+                case "6":
                     System.out.println("Ukončujem program.");
                     return;
                 default:
@@ -55,6 +58,21 @@ public class Main {
 
         } catch (Exception e) {
             System.out.println("Chybný vstup: " + e.getMessage());
+        }
+    }
+
+    private static void deleteTransaction() {
+        System.out.print("Zadaj ID transakcie na vymazanie: ");
+        String idInput = scanner.nextLine();
+        try {
+            int id = Integer.parseInt(idInput);
+            if (manager.deleteTransactionById(id)) {
+                System.out.println("Transakcia s ID " + id + " bola vymazaná.");
+            } else {
+                System.out.println("Transakcia s ID " + id + " nebola nájdená.");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("Neplatné ID.");
         }
     }
 
